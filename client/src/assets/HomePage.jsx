@@ -16,7 +16,7 @@ export const HomePage = () => {
 
 <Heading textAlign="center" color="orangered" fontFamily="monospace" fontSize="30px" mt="1%">
     Spark
-    <Text as="span" color="green" fontSize="25px">
+    <Text as="span" color="purple.600" fontSize="25px">
         List
     </Text>
 </Heading>
