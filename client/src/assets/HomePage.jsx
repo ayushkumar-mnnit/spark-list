@@ -1,6 +1,6 @@
 
 // import { TabList, TabPanel, TabPanels, Tabs, Tab} from '@chakra-ui/react'
-import { TabList, TabPanel, TabPanels, Tabs, Tab, Heading, Text } from "@chakra-ui/react";
+import { TabList, TabPanel, TabPanels, Tabs, Tab, Heading, Text, Box } from "@chakra-ui/react";
 
 import {Upcoming} from './Upcoming.jsx'
 import {Overdue} from './Overdue.jsx'
@@ -14,12 +14,18 @@ export const HomePage = () => {
     return (
         <>
 
-<Heading textAlign="center" color="orangered" fontFamily="monospace" fontSize="30px" mt="1%">
+<Box display="flex" justifyContent="left"  mt="1%" ml={"2%"} >
+
+<Heading textAlign="center" color="orangered" fontFamily="monospace" fontSize="25px">
     Spark
-    <Text as="span" color="purple.600" fontSize="25px">
+    <Text as="span" color="purple.600" fontSize="22px">
         List
     </Text>
 </Heading>
+
+</Box>
+
+
 
         
             <Tabs  p='10px'>

@@ -105,8 +105,11 @@ export const Upcoming = () => {
     const dueDate = new Date(TimeCreated);
 
     switch (Reminder) {
-      case "15min":
+      case "1min":
         dueDate.setMinutes(dueDate.getMinutes() + 1);
+        break;
+      case "15min":
+        dueDate.setMinutes(dueDate.getMinutes() + 15);
         break;
       case "30min":
         dueDate.setMinutes(dueDate.getMinutes() + 30);
@@ -245,6 +248,7 @@ export const Upcoming = () => {
             onChange={handleChange}
             placeholder="Select a reminder time"
           >
+            <option value="1min">1 min</option>
             <option value="15min">15 min</option>
             <option value="30min">30 min</option>
             <option value="1hr">1 hr</option>

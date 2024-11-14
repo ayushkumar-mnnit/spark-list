@@ -65,8 +65,11 @@ export const Overdue = () => {
   const calculateDueDate = (TimeCreated, Reminder) => {
     const dueDate = new Date(TimeCreated);
     switch (Reminder) {
-      case "15min":
+      case "1min":
         dueDate.setMinutes(dueDate.getMinutes() + 1);
+        break;
+      case "15min":
+        dueDate.setMinutes(dueDate.getMinutes() + 15);
         break;
       case "30min":
         dueDate.setMinutes(dueDate.getMinutes() + 30);
