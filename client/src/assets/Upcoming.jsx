@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Input, Box, FormControl, FormLabel, useToast, Select } from "@chakra-ui/react";
+import { MdDelete } from "react-icons/md";
+import { FaEdit, FaCheckCircle } from "react-icons/fa";
 
 export const Upcoming = () => {
   const toast = useToast();
@@ -15,6 +17,13 @@ export const Upcoming = () => {
   });
 
   const [myTask, setMyTask] = useState(JSON.parse(localStorage.getItem("tasks")) || []);
+
+  const [editTaskData, setEditTaskData] = useState({
+    isEditing: false,
+    editedTitle: "",
+    editedDescription: "",
+    taskToEdit: null,
+  });
 
   const addTask = () => {
     if (newTask.title && newTask.description && newTask.Reminder) {
@@ -84,32 +93,83 @@ export const Upcoming = () => {
         break;
     }
 
-    const formattedTime = dueDate.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
+    return dueDate.toLocaleString('en-US', 
+    { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true });
 
-    return dueDate.toDateString() + " , " + formattedTime;
   };
 
   const markTaskAsDone = (TimeCreated) => {
     const updatedTasks = myTask.map((task) =>
-      task.TimeCreated === TimeCreated ? { ...task, completed: true, completedOn:new Date().toLocaleString() } : task
+      task.TimeCreated === TimeCreated ? { ...task, completed: true, completedOn: new Date().toLocaleString() } : task
     );
     setMyTask(updatedTasks);
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks)); 
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
+  const deleteTask = (TimeCreated) => {
+    // Remove the task from the array
+    const updatedTasks = myTask.filter(task => task.TimeCreated !== TimeCreated);
 
+    // Update localStorage and state
+    setMyTask(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+    toast({
+      description: "Task deleted successfully!",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top-right",
+    });
+  };
+
+  const updateTask = (TimeCreated, updatedFields) => {
+    const updatedTasks = myTask.map((task) =>
+      task.TimeCreated === TimeCreated ? { ...task, ...updatedFields } : task
+    );
+    setMyTask(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
+  const startEdit = (task) => {
+    setEditTaskData({
+      isEditing: true,
+      editedTitle: task.title,
+      editedDescription: task.description,
+      taskToEdit: task,
+    });
+  };
+
+  const cancelEdit = () => {
+    setEditTaskData({
+      isEditing: false,
+      editedTitle: "",
+      editedDescription: "",
+      taskToEdit: null,
+    });
+  };
+
+  const saveEdit = () => {
+    if (editTaskData.editedTitle && editTaskData.editedDescription) {
+      updateTask(editTaskData.taskToEdit.TimeCreated, {
+        title: editTaskData.editedTitle,
+        description: editTaskData.editedDescription,
+      });
+      cancelEdit();
+    } else {
+      toast({
+        description: "Title and description are required!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right",
+      });
+    }
+  };
 
   useEffect(() => {
-   
     localStorage.setItem("tasks", JSON.stringify(myTask));
   }, [myTask]);
-
-
 
   return (
     <>
@@ -187,16 +247,47 @@ export const Upcoming = () => {
                 borderColor="gray.200"
                 bg={task.priority === "High" ? "red.100" : task.priority === "Medium" ? "purple.100" : "blue.100"}
               >
-                <h3><strong>Title:</strong> {task.title}</h3>
-                <p><strong>Description:</strong> {task.description}</p>
-                <h3><strong>Created:</strong> {task.DateCreated}</h3>
-                <h3><strong>Reminder:</strong> {task.Reminder}</h3>
-                <h4><strong>Due:</strong> {calculateDueDate(task.TimeCreated, task.Reminder)}</h4>
-                <Button
-                  onClick={() => markTaskAsDone(task.TimeCreated)} // Pass TimeCreated as a unique identifier
-                >
-                  Mark as Done
-                </Button>
+                {editTaskData.isEditing && editTaskData.taskToEdit?.TimeCreated === task.TimeCreated ? (
+                  <>
+                  <strong>Title: </strong>
+                    <Input
+                      value={editTaskData.editedTitle}
+                      onChange={(e) => setEditTaskData({ ...editTaskData, editedTitle: e.target.value })}
+                      placeholder="Edit Title"
+                    />
+                    <strong>Description: </strong>
+                    <Input
+                      mt={2}
+                      value={editTaskData.editedDescription}
+                      onChange={(e) => setEditTaskData({ ...editTaskData, editedDescription: e.target.value })}
+                      placeholder="Edit Description"
+                    />
+                    <Button mt={2} onClick={saveEdit}>
+                      Save
+                    </Button>
+                    <Button mt={2} ml={2} onClick={cancelEdit}>
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <h4><strong>Title</strong> {task.title}</h4>
+                    <h4><strong>Description:</strong> {task.description}</h4>
+                    <h4><strong>Created:</strong> {new Date().toLocaleString('en-US',
+                    { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })}</h4>
+
+                    <h4><strong>Due on:</strong> {calculateDueDate(task.TimeCreated, task.Reminder)}</h4>
+                 
+                      <Box mt={2} gap={7} display={'flex'}>
+
+                      <FaCheckCircle color="green" style={{cursor:'pointer'}} onClick={() => markTaskAsDone(task.TimeCreated)} />
+                      <FaEdit color="blue" style={{cursor:'pointer'}} onClick={() => startEdit(task)}/>
+                      <MdDelete color="red" style={{cursor:'pointer'}} onClick={() => deleteTask(task.TimeCreated)}/>
+
+                    </Box>
+
+                  </>
+                )}
               </Box>
             ))
         )}

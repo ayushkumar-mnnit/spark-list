@@ -7,8 +7,10 @@ export const Completed = () => {
   );
 
   useEffect(() => {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    setCompletedTasks(tasks);
+    setInterval(()=>{
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+      setCompletedTasks(tasks);
+    },2000)
   }, []);
 
 
