@@ -12,9 +12,10 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit, FaCheckCircle } from "react-icons/fa";
 
 import { useAuth } from "./context/ContextApi.jsx";
+import { BsEmojiSunglasses } from "react-icons/bs";
 
 export const Upcoming = () => {
-  const { toggle, Myfooter, langToggle,calculateDueDate } = useAuth();
+  const { toggle, Myfooter, langToggle, calculateDueDate } = useAuth();
 
   const toast = useToast();
 
@@ -63,7 +64,9 @@ export const Upcoming = () => {
       });
 
       toast({
-        description: "Task added successfully!",
+        description: langToggle
+          ? "कार्य सफलतापूर्वक जोड़ा गया"
+          : "Task added successfully!",
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -71,7 +74,9 @@ export const Upcoming = () => {
       });
     } else {
       toast({
-        description: "All fields are required!",
+        description: langToggle
+          ? "सभी फ़ील्ड आवश्यक हैं"
+          : "All fields are required!",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -85,8 +90,6 @@ export const Upcoming = () => {
     setNewTask({ ...newTask, [name]: value });
   };
 
-
-
   const markTaskAsDone = (TimeCreated) => {
     const updatedTasks = myTask.map((task) =>
       task.TimeCreated === TimeCreated
@@ -95,6 +98,23 @@ export const Upcoming = () => {
     );
     setMyTask(updatedTasks);
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+    toast({
+      description: (
+        <span style={{ display: "inline-flex", alignItems: "center" }}>
+          {langToggle
+            ? `कार्य सफलतापूर्वक पूरा हुआ `
+            : `Task completed successfully `}
+          <BsEmojiSunglasses color="white" style={{ marginLeft: "5px" }} />
+        </span>
+      ),
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+      position: "top-right",
+    });
+    
+    
   };
 
   const deleteTask = (TimeCreated) => {
@@ -106,7 +126,9 @@ export const Upcoming = () => {
     localStorage.setItem("tasks", JSON.stringify(updatedTasks));
 
     toast({
-      description: "Task deleted successfully!",
+      description: langToggle
+        ? "कार्य सफलतापूर्वक हटा दिया गया"
+        : "Task deleted successfully!",
       status: "success",
       duration: 3000,
       isClosable: true,
@@ -256,11 +278,11 @@ export const Upcoming = () => {
             onChange={handleChange}
             placeholder={langToggle ? "प्राथमिकता चुनें" : "choose priority"}
           >
-            <option
+           <option
               style={{ backgroundColor: toggle ? "black" : "white" }}
-              value="Low"
+              value="High"
             >
-              {langToggle ? "न्यूनतम" : "Low"}
+              {langToggle ? "उच्च" : "High"}
             </option>
             <option
               style={{ backgroundColor: toggle ? "black" : "white" }}
@@ -271,10 +293,11 @@ export const Upcoming = () => {
             </option>
             <option
               style={{ backgroundColor: toggle ? "black" : "white" }}
-              value="High"
+              value="Low"
             >
-              {langToggle ? "उच्च" : "High"}
+              {langToggle ? "न्यूनतम" : "Low"}
             </option>
+            
           </Select>
         </FormControl>
 
@@ -349,10 +372,10 @@ export const Upcoming = () => {
                       placeholder="Edit Description"
                     />
                     <Button mt={2} onClick={saveEdit}>
-                    {langToggle ? "संपादित करें" : "Save"}
+                      {langToggle ? "संपादित करें" : "Save"}
                     </Button>
                     <Button mt={2} ml={2} onClick={cancelEdit}>
-                    {langToggle ? "रद्द करें" : "Cancel"}
+                      {langToggle ? "रद्द करें" : "Cancel"}
                     </Button>
                   </>
                 ) : (
