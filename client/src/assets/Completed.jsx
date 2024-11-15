@@ -1,9 +1,11 @@
 import { Box, useToast } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
+import { useAuth } from "./context/ContextApi.jsx";
 
 export const Completed = () => {
   const toast = useToast();
+  const { toggle, Myfooter, langToggle } = useAuth();
 
   const [completedTasks, setCompletedTasks] = useState(
     JSON.parse(localStorage.getItem("tasks")) || []
@@ -34,58 +36,77 @@ export const Completed = () => {
   };
 
   return (
-    <Box p={4}>
-      {completedTasks.length === 0 ? (
-        <p>Nothing to show up here!</p>
-      ) : (
-        completedTasks
-          .filter((task) => task.completed === true)
-          .map((task, index) => (
-            <Box
-              key={index}
-              p={4}
-              mb={2}
-              border="1px"
-              borderColor="gray.200"
-              bg={
-                task.priority === "High"
-                  ? "red.100"
-                  : task.priority === "Medium"
-                  ? "green.100"
-                  : "purple.100"
-              }
-            >
-              <h3>
-                <strong>Title:</strong> {task.title}
-              </h3>
-              <p>
-                <strong>Description:</strong> {task.description}
-              </p>
-              <h3>
-                <strong>Created:</strong> {task.DateCreated}
-              </h3>
-              <h3>
-                <strong>Status:</strong>{" "}
-                <span
-                  style={{
-                    color: "green",
-                    fontWeight: "bold",
-                    fontFamily: "monospace",
-                    fontSize: "15px",
-                  }}
-                >
-                  completed on
-                </span>{" "}
-                {task.completedOn}
-              </h3>
-              <MdDelete
-                color="red"
-                style={{ cursor: "pointer" }}
-                onClick={() => deleteTask(task.TimeCreated)}
-              />
-            </Box>
-          ))
-      )}
-    </Box>
+    <>
+      <Box p={4}>
+        {completedTasks.length === 0 ? (
+          <p>Nothing to show up here!</p>
+        ) : (
+          completedTasks
+            .filter((task) => task.completed === true)
+            .map((task, index) => (
+              <Box
+                key={index}
+                p={4}
+                mb={2}
+                border="1px"
+                borderColor="gray.200"
+                color={toggle ? "black" : "black"}
+                bg={
+                  task.priority === "High"
+                    ? "red.100"
+                    : task.priority === "Medium"
+                    ? "green.100"
+                    : "purple.100"
+                }
+              >
+                <h3>
+                  <strong>{langToggle ? "शीर्षक:" : "Title:"}</strong>{" "}
+                  {task.title}
+                </h3>
+                <p>
+                  <strong>{langToggle ? "विवरण:" : "Description:"}</strong>{" "}
+                  {task.description}
+                </p>
+                <h3>
+                  <strong>{langToggle ? "बनाया:" : "Created:"}</strong>{" "}
+                  {new Date(task.DateCreated).toLocaleString(
+                    langToggle ? "hi-IN" : "en-US",
+                    {
+                      weekday: "short",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                      second: "numeric",
+                      hour12: true,
+                    }
+                  )}
+                </h3>
+                <h3>
+                  <strong>{langToggle ? "स्थिति:" : "Status:"}</strong>{" "}
+                  <span
+                    style={{
+                      color: "green",
+                      fontWeight: "bold",
+                      fontFamily: "monospace",
+                      fontSize: "15px",
+                    }}
+                  >
+                    {langToggle ? "पूर्ण" : "completed"}
+                  </span>{" "}
+                  {task.completedOn}
+                </h3>
+                <MdDelete
+                  color="red"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => deleteTask(task.TimeCreated)}
+                />
+              </Box>
+            ))
+        )}
+      </Box>
+      <Myfooter />
+    </>
   );
 };

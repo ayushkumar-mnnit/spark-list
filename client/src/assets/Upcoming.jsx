@@ -9,26 +9,19 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
-import { FaEdit, FaCheckCircle, FaHeart } from "react-icons/fa";
-import { BsEmojiWinkFill } from "react-icons/bs";
-import { RiCopyrightLine } from "react-icons/ri";
+import { FaEdit, FaCheckCircle } from "react-icons/fa";
+
+import { useAuth } from "./context/ContextApi.jsx";
 
 export const Upcoming = () => {
+  const { toggle, Myfooter, langToggle,calculateDueDate } = useAuth();
+
   const toast = useToast();
 
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
-    DateCreated: new Date().toLocaleString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: true,
-    }),
+    DateCreated: new Date(),
     TimeCreated: new Date(),
     Reminder: "",
     completed: false,
@@ -50,16 +43,7 @@ export const Upcoming = () => {
     if (newTask.title && newTask.description && newTask.Reminder) {
       const taskWithDate = {
         ...newTask,
-        DateCreated: new Date().toLocaleString("en-US", {
-          weekday: "short",
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-          hour12: true,
-        }),
+        DateCreated: new Date(),
         TimeCreated: new Date(),
         completed: false,
         overdue: false,
@@ -101,43 +85,7 @@ export const Upcoming = () => {
     setNewTask({ ...newTask, [name]: value });
   };
 
-  const calculateDueDate = (TimeCreated, Reminder) => {
-    const dueDate = new Date(TimeCreated);
 
-    switch (Reminder) {
-      case "1min":
-        dueDate.setMinutes(dueDate.getMinutes() + 1);
-        break;
-      case "15min":
-        dueDate.setMinutes(dueDate.getMinutes() + 15);
-        break;
-      case "30min":
-        dueDate.setMinutes(dueDate.getMinutes() + 30);
-        break;
-      case "1hr":
-        dueDate.setHours(dueDate.getHours() + 1);
-        break;
-      case "8hr":
-        dueDate.setHours(dueDate.getHours() + 8);
-        break;
-      case "1day":
-        dueDate.setDate(dueDate.getDate() + 1);
-        break;
-      default:
-        break;
-    }
-
-    return dueDate.toLocaleString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
-      hour12: true,
-    });
-  };
 
   const markTaskAsDone = (TimeCreated) => {
     const updatedTasks = myTask.map((task) =>
@@ -218,7 +166,9 @@ export const Upcoming = () => {
     <>
       <Box p={4}>
         <FormControl mb={4}>
-          <FormLabel htmlFor="title">Title</FormLabel>
+          <FormLabel htmlFor="title">
+            {langToggle ? "शीर्षक" : "Title"}
+          </FormLabel>
           <Input
             id="title"
             name="title"
@@ -229,7 +179,9 @@ export const Upcoming = () => {
         </FormControl>
 
         <FormControl mb={4}>
-          <FormLabel htmlFor="description">Description</FormLabel>
+          <FormLabel htmlFor="description">
+            {langToggle ? "विवरण" : "Description"}
+          </FormLabel>
           <Input
             id="description"
             name="description"
@@ -240,40 +192,94 @@ export const Upcoming = () => {
         </FormControl>
 
         <FormControl mb={4}>
-          <FormLabel htmlFor="reminder">Reminder</FormLabel>
+          <FormLabel htmlFor="reminder">
+            {langToggle ? "अनुस्मारक" : "Reminder"}
+          </FormLabel>
           <Select
             id="reminder"
+            fontSize={"14px"}
             name="Reminder"
             value={newTask.Reminder}
             onChange={handleChange}
-            placeholder="Select a reminder time"
+            placeholder={
+              langToggle ? "अनुस्मारक समय चुनें" : "select reminder time"
+            }
           >
-            <option value="1min">1 min</option>
-            <option value="15min">15 min</option>
-            <option value="30min">30 min</option>
-            <option value="1hr">1 hr</option>
-            <option value="8hr">8 hr</option>
-            <option value="1day">1 day</option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="1min"
+            >
+              {langToggle ? "1 मिनट" : "1 min."}
+            </option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="15min"
+            >
+              {langToggle ? "15 मिनट" : "15 min."}
+            </option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="30min"
+            >
+              {langToggle ? "30 मिनट" : "30 min."}
+            </option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="1hr"
+            >
+              {langToggle ? "1 घंटा" : "1 hr."}
+            </option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="8hr"
+            >
+              {langToggle ? "8 घंटा" : "8 hr."}
+            </option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="1day"
+            >
+              {langToggle ? "1 दिन" : "1 day"}
+            </option>
           </Select>
         </FormControl>
 
         <FormControl mb={4}>
-          <FormLabel htmlFor="priority">Priority</FormLabel>
+          <FormLabel htmlFor="priority">
+            {langToggle ? "प्राथमिकता" : "Priority"}
+          </FormLabel>
           <Select
             id="priority"
             name="priority"
+            fontSize={"14px"}
             value={newTask.priority}
             onChange={handleChange}
-            placeholder="Choose priority"
+            placeholder={langToggle ? "प्राथमिकता चुनें" : "choose priority"}
           >
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="Low"
+            >
+              {langToggle ? "न्यूनतम" : "Low"}
+            </option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="Medium"
+            >
+              {" "}
+              {langToggle ? "मध्यम" : "Medium"}
+            </option>
+            <option
+              style={{ backgroundColor: toggle ? "black" : "white" }}
+              value="High"
+            >
+              {langToggle ? "उच्च" : "High"}
+            </option>
           </Select>
         </FormControl>
 
-        <Button bg={"purple.100"} onClick={addTask}>
-          Add Task
+        <Button bg={toggle ? "green.200" : "purple.100"} onClick={addTask}>
+          {langToggle ? "कार्य जोड़ें" : "Add"}
         </Button>
       </Box>
 
@@ -284,12 +290,14 @@ export const Upcoming = () => {
         fontSize="small"
         justifyContent={"center"}
       >
-        <Box bg="red.200" w={"20px"} h={"20px"} borderRadius={"50%"}></Box>High
-        priority
+        <Box bg="red.200" w={"20px"} h={"20px"} borderRadius={"50%"}></Box>
+        {langToggle ? "उच्च प्राथमिकता" : "High priority"}
         <Box bg="green.200" w={"20px"} h={"20px"} borderRadius={"50%"}></Box>
-        Medium priority
+        {langToggle ? "मध्यम प्राथमिकता" : "Medium priority"}
         <Box bg="purple.200" w={"20px"} h={"20px"} borderRadius={"50%"}></Box>
-        Low priority (default)
+        {langToggle
+          ? "न्यूनतम प्राथमिकता (डिफ़ॉल्ट)"
+          : "Low priority (default)"}
       </Box>
 
       <Box p={4}>
@@ -305,6 +313,7 @@ export const Upcoming = () => {
                 mb={2}
                 border="1px"
                 borderColor="gray.200"
+                color={toggle ? "black" : "black"}
                 bg={
                   task.priority === "High"
                     ? "red.100"
@@ -316,7 +325,7 @@ export const Upcoming = () => {
                 {editTaskData.isEditing &&
                 editTaskData.taskToEdit?.TimeCreated === task.TimeCreated ? (
                   <>
-                    <strong>Title: </strong>
+                    <strong>{langToggle ? "शीर्षक:" : "Title:"} </strong>
                     <Input
                       value={editTaskData.editedTitle}
                       onChange={(e) =>
@@ -327,7 +336,7 @@ export const Upcoming = () => {
                       }
                       placeholder="Edit Title"
                     />
-                    <strong>Description: </strong>
+                    <strong>{langToggle ? "विवरण:" : "Description:"} </strong>
                     <Input
                       mt={2}
                       value={editTaskData.editedDescription}
@@ -340,27 +349,54 @@ export const Upcoming = () => {
                       placeholder="Edit Description"
                     />
                     <Button mt={2} onClick={saveEdit}>
-                      Save
+                    {langToggle ? "संपादित करें" : "Save"}
                     </Button>
                     <Button mt={2} ml={2} onClick={cancelEdit}>
-                      Cancel
+                    {langToggle ? "रद्द करें" : "Cancel"}
                     </Button>
                   </>
                 ) : (
                   <>
                     <h4>
-                      <strong>Title</strong> {task.title}
+                      <strong>{langToggle ? "शीर्षक:" : "Title:"}</strong>{" "}
+                      {task.title}
                     </h4>
                     <h4>
-                      <strong>Description:</strong> {task.description}
+                      <strong>{langToggle ? "विवरण:" : "Description:"}</strong>{" "}
+                      {task.description}
                     </h4>
                     <h4>
-                      <strong>Created:</strong> {task.DateCreated}
+                      <strong>{langToggle ? "बनाया:" : "Created:"}</strong>{" "}
+                      {task.DateCreated.toLocaleString(
+                        langToggle ? "hi-IN" : "en-US",
+                        {
+                          weekday: "short",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "numeric",
+                          second: "numeric",
+                          hour12: true,
+                        }
+                      )}
                     </h4>
 
                     <h4>
-                      <strong>Due:</strong>{" "}
-                      {calculateDueDate(task.TimeCreated, task.Reminder)}
+                      <strong>{langToggle ? "नियत तारीख:" : "Due:"}</strong>{" "}
+                      {calculateDueDate(
+                        task.TimeCreated,
+                        task.Reminder
+                      ).toLocaleString(langToggle ? "hi-IN" : "en-US", {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        second: "numeric",
+                        hour12: true,
+                      })}
                     </h4>
 
                     <Box mt={2} gap={7} display={"flex"}>
@@ -387,45 +423,7 @@ export const Upcoming = () => {
         )}
       </Box>
 
-      <div
-        className="footer"
-        style={{ textAlign: "center", padding: "10px 0", fontSize: "small" }}
-      >
-        <h5
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "5px",
-          }}
-        >
-          Made with love
-          <FaHeart size={"17px"} color="red" />
-          and a bit of code
-          <BsEmojiWinkFill size={"17px"} color="green" />
-        </h5>
-
-        <p>
-          <span style={{ display: "inline-flex", alignItems: "center" }}>
-            <RiCopyrightLine /> 2024-25 | All rights reserved @
-          </span>
-          <span style={{ textDecoration: "underline", color: "purple" }}>
-            <a
-              href="https://www.linkedin.com/in/ayushkumar2025"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ayush Kumar
-            </a>
-          </span>
-        </p>
-
-        <p>
-          <span>
-            Powered by <strong>SparkList</strong>
-          </span>
-        </p>
-      </div>
+      <Myfooter />
     </>
   );
 };
