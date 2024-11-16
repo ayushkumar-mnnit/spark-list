@@ -16,7 +16,7 @@ export const HomePage = () => {
     const {handleToggle, toggle,langToggle, handleLangToggle} = useAuth();
 
     if(toggle){
-        document.body.style.backgroundColor = "black"
+        document.body.style.backgroundColor = "#243642"
         document.body.style.color = "white"
     }else{
         document.body.style.backgroundColor = "white"

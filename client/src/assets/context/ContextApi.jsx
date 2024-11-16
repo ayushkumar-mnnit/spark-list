@@ -37,7 +37,7 @@ return <>
           Made with love
           <FaHeart size={"17px"} color="red" />
           and a bit of code
-          <BsEmojiWinkFill size={"17px"} style={{color: toggle?"lightgreen":"green"}}  />
+          <BsEmojiWinkFill size={"17px"} style={{color: toggle?"lightgreen":"#059212"}}  />
         </h5>
 
         <p>

@@ -81,10 +81,10 @@ export const Overdue = () => {
               color={toggle ? "black" : "black"}
               bg={
                 task.priority === "High"
-                  ? "red.100"
-                  : task.priority === "Medium"
-                  ? "green.100"
-                  : "purple.100"
+                    ? "red.100"
+                    : task.priority === "Medium"
+                    ? "green.100"
+                    : "purple.100"
               }
             >
               <h3>
